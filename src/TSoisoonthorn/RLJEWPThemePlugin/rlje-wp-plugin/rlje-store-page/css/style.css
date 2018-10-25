@@ -1,0 +1,83 @@
+header {
+    margin-bottom: 35px;
+}
+
+.alert i {
+    margin-right: 5px;
+}
+
+.page-body h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.page-body h3 {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+.page-body p {
+    font-size: 16px;
+}
+
+.gift-section {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.gift-item, .order-detail {
+    padding: 30px;
+    border: 2px solid #eee;
+}
+
+.gift-section .title {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.gift-icon {
+    width: 100px;
+}
+
+#gift-quantity {
+    width: 60px;
+    height: 35px;
+}
+
+.checkout-total {
+    padding: 20px 0;
+}
+
+/* Checkout page */
+
+.order-summary {
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    padding: 19px;
+    margin-bottom: 15px;
+}
+
+.gift-order-summary {
+}
+
+.form-section {
+    margin-bottom: 25px;
+}
+
+.form-head {
+    margin: 0 0 15px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+#card-number,
+#card-expiration,
+#card-cvc {
+    height: 34px;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Confirmation page */

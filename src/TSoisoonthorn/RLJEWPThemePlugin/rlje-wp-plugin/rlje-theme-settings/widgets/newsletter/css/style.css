@@ -1,0 +1,54 @@
+#signup-newsletter-widget {
+    float: right;
+}
+
+#signup-newsletter-widget #signup-newsletter-email {
+    border: medium none;
+    border-radius: 0;
+    color: #666;
+    height: 40px;
+    padding: 5px;
+    width: 80%;
+    font-size: 13.5px;
+    min-width: 225px;
+}
+#signup-newsletter-widget #signup-newsletter-email:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+}
+
+#signup-newsletter-widget #signup-newsletter-button {
+    background: #222 url('../img/right-arrow.png') no-repeat center 4px scroll;
+    background-size: 25px 25px;
+    display: inline-block;
+    height: 40px;
+    width: 45px;
+    margin-left: 2px;
+    text-indent: -9999px;
+}
+#signup-newsletter-widget #signup-newsletter-button:disabled {
+    cursor: not-allowed;
+}
+
+#signup-newsletter-widget #signup-newsletter-message .alert {
+    padding: 9px 31px 4px 3px;
+    margin-bottom: 20px;
+    text-shadow: none;
+}
+
+#signup-newsletter-widget #signup-newsletter-message .alert-success {
+    border: medium none;
+    color: #cccccc;
+    font-size: 13.5px;
+    font-weight: 300;
+    background: transparent;
+}
+
+#signup-newsletter-widget #signup-newsletter-message .alert-error {
+    color: #cccccc;
+    background-color: none;
+    border: 0px;
+    font-size: 13.5px;
+    font-weight: 300;
+    background: transparent;
+}

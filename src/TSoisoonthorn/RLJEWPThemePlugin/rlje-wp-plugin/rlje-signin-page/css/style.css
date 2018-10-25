@@ -1,0 +1,51 @@
+#signin, #forgotpassword {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#signin a,
+#forgotpassword a {
+    text-transform: initial;
+}
+
+#signin h1,
+#signin h2,
+#signin h3,
+#signin h4,
+#signin h5,
+#signin h6 {
+    color: #0b98b8d9;
+}
+
+#forgotpassword h1,
+#forgotpassword h2,
+#forgotpassword h3,
+#forgotpassword h4,
+#forgotpassword h5,
+#forgotpassword h6 {
+    color: #0b98b8d9;
+}
+
+#signin header,
+#forgotpassword header {
+    margin-bottom: 20px;
+}
+
+.login-form {
+    padding: 0;
+}
+
+.login-form button {
+    margin-top: 50px;
+    margin-bottom: 25px;
+}
+
+.login-form label small {
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.forgot-password a {
+    font-size: inherit;
+}

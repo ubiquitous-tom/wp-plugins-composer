@@ -1,0 +1,42 @@
+/* .search-form #search-button {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    background: transparent url('../img/search.png') no-repeat 0 0 scroll;
+	background-size: 23px 23px;
+} */
+
+@media screen and (min-width: 992px) {
+    .search-form {
+        padding: 18px 0;
+    }
+}
+
+.search-form .search-field {
+    border-radius: 0;
+}
+
+.search-form label {
+    display: inline-block;
+}
+
+@media screen and (min-width: 992px) {
+    .search-form label {
+        margin: 0 25px 0 0;
+    }
+}
+
+
+.search-form input[type="submit"] {
+    display: none;
+}
+
+.search-form #search-button {
+
+}
+
+#search-input {
+}
+
+.search h4 {
+}

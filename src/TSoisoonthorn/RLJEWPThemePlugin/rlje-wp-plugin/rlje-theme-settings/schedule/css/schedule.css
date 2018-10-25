@@ -1,0 +1,23 @@
+.schedule ul.subnav li {
+    padding-right: 12.5px;
+    padding-left: 12.5px;
+}
+
+/* .schedule #schedule-trailer-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 0;
+    height: 0;
+}
+ */
+.schedule #brightcove-schedule-trailer-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.schedule #brightcove-schedule-trailer-player.hidden {
+    display: none;
+}

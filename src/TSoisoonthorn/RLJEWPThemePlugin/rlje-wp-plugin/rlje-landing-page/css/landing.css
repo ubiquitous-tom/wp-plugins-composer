@@ -1,0 +1,41 @@
+/* BASE CSS */
+h1{font-size: 2em;}
+h2{font-size: 1.5em;}
+h3{font-size: 1.17em;}
+h4{font-size: 1.12em;}
+h5{font-size: .83em;}
+h6{font-size: .75em;}
+
+/* LANDING PAGE */
+.hero { position: relative; margin-top: 45px; width: 100%; background: #000;/* for IE 6 */}
+#hero-content { position: absolute; padding: 4% 0; top:0; left: 0; max-width:415px;}
+#hero-content.heroText{position: relative; max-width: none;}
+.hero-header {color: rgb(255, 255, 255);font-family: source sans pro;font-size: 28px;letter-spacing: 0.03em;line-height: 33px;margin-top: 15px;text-transform: none;}
+.hero-callout{color: rgb(255, 255, 255); font-family: oxygen; font-size: 15px; font-weight: 300; line-height: 25px;}
+.landing-body{padding-top: 0px; padding-bottom: 40px; background-color: #fff; color: rgb(85, 85, 85);}
+.landing-body h1,.landing-body h2,.landing-body h3,.landing-body h4,.landing-body h5{font-family: source sans pro;font-weight: 600;letter-spacing: 0.02em;margin-top:40px;line-height: 25px;text-transform:none;color:#333;}
+.landing-body p{color: rgb(85, 85, 85); letter-spacing: 0.02em; font-family: oxygen; margin-bottom: 15px; margin-top: 15px; font-size: 13.5px; line-height: 25px;}
+.landing-link,.landing-link:focus,.landing-link:hover,.landing-link:active{font-family: source sans pro;font-weight: 600;letter-spacing: 0.17em;text-transform: uppercase;font-size:12px;color:#333;border-bottom:1px solid}
+.landing-or{font-size:oxygen;font-size:13px; margin-left:5px;margin-right:5px;color:#555;letter-spacing:.02em;line-height:30px;margin-bottom:35px;}
+.quote-container{margin: 0px auto; text-align: center; background: rgb(250, 250, 250) none repeat scroll 0% 0%; padding: 25px 0px; border-top: 1px solid rgb(238, 238, 238); border-bottom: 1px solid rgb(238, 238, 238);}
+.quote{color: rgb(85, 85, 85); text-align: center; font-weight: 200; letter-spacing: 0.04em; max-width: 450px; line-height: 35px; font-size: 17.5px; margin: 15px auto;}
+.quote-contributor{color:#999; line-height: 40px; margin: 0px auto; text-align: center; font-weight: 200; font-size:13px; letter-spacing: 0.04em; max-width: 500px;margin-top:10px;}
+.atv-callout{letter-spacing: 0.02em; font-family: oxygen; margin-bottom: 10px; margin-top: 40px; line-height: 25px; color: rgb(240, 240, 240); font-weight: 300; font-size: 13.5px;}
+.quote-img{width:25px;opacity: .16}
+
+@media all and (min-width: 1100px) {
+
+}
+
+@media (min-width: 768px){
+button{font-size:12.5px;}
+.landing-link,.landing-link:focus,.landing-link:hover,.landing-link:active{font-size:12.5px;}
+.landing-body{padding-top: 35px; padding-bottom: 50px;}
+.landing-body h1,.landing-body h2,.landing-body h3,.landing-body h4,.landing-body h5{margin-top:12px;}
+.landing-body p{font-size: 14.5px; line-height: 30px;margin-top:8px}
+.quote-container{padding: 45px 0px;}
+.quote{font-size: 18.5px;}
+.quote-contributor{font-size:14px;}
+.quote-img{width:30px;}
+.atv-callout{font-size: 15.1px;margin-top: 15px; line-height: 30px }
+}

@@ -1,0 +1,342 @@
+/* BASE CSS */
+
+body {
+    /* background: #011f36; */
+    background: #011f36 url(../img/umc_bkg_f.jpg) no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+p,
+button {
+    font-family: 'Nunito', sans-serif;
+}
+
+/* CAROUSEL */
+
+.carousel-controls {
+    max-width: calc(510px / (9/16));
+}
+
+.carousel .item .container {
+    max-width: calc(485px / (9/16));
+    padding: 0;
+}
+
+.carousel .item .left,
+.carousel .item .right {
+    transform: none;
+    transform-origin: initial;
+    top: auto;
+}
+.carousel .item .left {
+    max-width: calc(485px / (9/16));
+}
+
+.carousel .item .right {
+    max-width: calc(485px / (9/16));
+}
+
+/* NAVBAR */
+
+.navbar-nav>li>a,
+.log-in {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+#top-nav {
+    background: #011f36;
+}
+#top-nav .nav>li>a.sign-up:hover {
+    background-color: #2E86C1;
+}
+#top-nav .navbar-brand img {
+    height: 30px;
+}
+
+/* SIGNUP PROMOTION */
+
+#home-signup-promotion {
+    box-shadow: inset 0 0 30px -5px #050505;
+}
+
+#home-signup-promotion h5 {
+    font-weight: 300;
+}
+
+#home-signup-promotion .fa-play {
+    margin-right: 10px;
+}
+
+#home-signup-promotion .pitch {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+/* BUTTONS, TABS, AND ICONS  */
+
+.page-subhead {
+    letter-spacing: 1px;
+}
+
+.btn {
+    border-radius: 0;
+}
+
+.btn-primary {
+    border-color: transparent;
+    background-color: #3498DB;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:active:hover {
+    background-color: #2E86C1;
+    border-color: transparent;
+}
+
+.btn-lg {
+    border-radius: 0;
+}
+
+/* DROPDOWN */
+
+#options {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+#drop-select li {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* BROWSE TEMPLATE*/
+
+.browse li {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+.browse .alert-info {
+    background: transparent;
+    border: none;
+    color: #fff;
+}
+
+
+/* FRANCHISE TEMPLATE */
+
+.secondary-bg {
+    background: rgba(6, 2, 6, 0.7);
+}
+
+.franchise-eps-bg {
+    background: #032a45;
+}
+.item div:hover a .franchise-eps-bg,
+[itemprop="episode"] div:hover a .franchise-eps-bg {
+    background: #976d31;
+}
+
+/* SCHEDULE TEMPLATE */
+
+.schedule li {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+.schedule h6 {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+.schedule .alert-info {
+    background: transparent;
+    border: none;
+    color: #fff;
+}
+
+/* CONTACT US */
+
+#contact-hero h3 {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+#contact-form button {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* FOOTER TEMPLATE */
+
+.footer a {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* VALTIRA ADDITIONS */
+
+.menuOptions {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+.drop-select li {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+#nextEpisodeOverlay p {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* HOME TEMPLATE*/
+
+.view-all a {
+    letter-spacing: 1px;
+}
+
+.home-middle h4.subnav {
+    display: none;
+}
+
+/* OTHERS */
+
+.home-hero-carousel,
+.sub-footer {
+    background: rgba(1, 31, 54, .5);
+}
+.home-featured,
+.home-spotlights {
+    background: transparent;
+}
+
+.carousel .item .hero-img {
+    background: transparent;
+}
+
+.season .subnav-next,
+.trailer .subnav-next {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.season.episode .subnav-next {
+    visibility: initial;
+    pointer-events: initial;
+}
+
+.footer {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100% !important;
+}
+
+#cover {
+    border-color: #011f36;
+}
+
+#options,
+#drop-select {
+    background: #011f36;
+    border-color: #011f36;
+}
+
+span[itemprop="trailer"] a button {
+    background: #976d31;
+    border-color: #976d31;
+}
+
+span[itemprop="trailer"] a button:hover {
+    background: #a27b43;
+    border-color: #a27b43;
+}
+
+#watchlistActionButton {
+    background: #011f36;
+    border-color: #011f36;
+}
+
+.continueEpisodeBtn.js-play-start,
+.continueEpisodeBtn.js-player-start {
+    background: #976d31;
+    border-color: #976d31;
+}
+
+.continueEpisodeBtn.js-play-start:hover,
+.continueEpisodeBtn.js-player-start:hover {
+    background: #a27b43;
+    border-color: #a27b43;
+}
+
+.home-callout {
+    /* background: #052e45; */
+    background: rgba(5, 46, 69, 0.5);
+}
+
+.home-callout #border-carousel {
+    border-color: #fff;
+}
+
+.home-callout .home-callout-content button {
+    background: #976d31;
+    text-transform: uppercase;
+}
+
+.home-callout .home-callout-content button:hover {
+    background: #a27b43;
+}
+
+.footer ul {
+    margin-top: 0;
+}
+
+.footer p {
+    margin-top: 0;
+}
+
+/* SMARTBANNER APP */
+.smartbanner {
+    background: #011f36 !important;
+}
+.smartbanner__button {
+    color: #011f36 !important;
+}
+
+@media (min-width: 768px) {
+    .navbar-right-ul {
+        width: auto;
+    }
+}
+
+@media (min-width: 992px) {
+    #top-nav .navbar-brand img {
+        height: 45px;
+    }
+}
+
+@media all and (min-width: 1100px) {
+    .carousel-controls {
+        top: calc(50% - (130px/2));
+    }
+    #top-nav .navbar-brand img {
+        height: 45px;
+    }
+}
+@media screen and (min-width: 1200px) {
+    #top-nav .nav>li>a.sign-up {
+        background-color: #3498DC;
+    }
+}

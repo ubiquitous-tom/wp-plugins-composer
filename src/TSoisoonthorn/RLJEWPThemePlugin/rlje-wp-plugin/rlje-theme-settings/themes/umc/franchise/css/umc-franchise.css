@@ -1,0 +1,96 @@
+body {
+    background: #011f36;
+}
+
+#franchise-container {
+    margin-top: 0px;
+}
+#franchise-container .secondary-bg {
+    background-image: linear-gradient(to top, rgba(1, 31, 54, 1) 10%, rgba(0, 0, 0, 0) 70%), url('../../img/umc_bkg.jpg');
+    background-position: right 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    min-height: 80vh;
+}
+
+#franchise-container:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    background: linear-gradient(to right, rgba(0, 0, 0, .35) 0, rgba(0, 0, 0, 0) 100%);
+    height: 100%;
+    width: 100%;
+}
+
+.admin-bar #franchise-container {
+    background-position-y: 140px;
+}
+
+#franchise-container .inline {
+    margin-left: 0;
+}
+
+#franchise-container .episode {
+    margin-top: auto;
+}
+
+#franchise-container .episode .subnav2 {
+    text-align: center;
+    margin-left: auto;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#fanchise-synopsis {
+    margin-top: 265px;
+    z-index: 1;
+}
+
+#franchise-actor,
+#franchise-director {
+    margin-top: 30px;
+    /* text-transform: uppercase; */
+}
+
+#fanchise-synopsis h2 {
+    font-size: 1.5em;
+}
+#franchise-description,
+#franchise-actor,
+#franchise-director {
+    font-size: 1em;
+    line-height: 1.3;
+}
+
+@media (min-width: 768px) {
+    #franchise-container .secondary-bg:after {
+        display: inline-block;
+    }
+    #franchise-container .episode {
+        margin-top: -15vh;
+    }
+    /* .user-logged-in #franchise-container .episode {
+        margin-top: auto;
+    } */
+    #franchise-container .episode .subnav2 {
+        text-align: left;
+        margin-left: 15px;
+        letter-spacing: auto;
+    }
+    #franchise-container .episode .episode-content-strip {
+        position: relative;
+    }
+    #fanchise-synopsis {
+        margin-top: 75px;
+    }
+    #fanchise-synopsis h2 {
+        font-size: 2em;
+    }
+    #franchise-description,
+    #franchise-actor,
+    #franchise-director {
+        font-size: 1.05em;
+        line-height: 1.5;
+    }
+}

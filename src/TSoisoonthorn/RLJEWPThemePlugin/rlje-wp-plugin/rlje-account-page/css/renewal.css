@@ -1,0 +1,16 @@
+.alert i {
+    margin-right: 5px;
+}
+
+#card-number,
+#card-expiration,
+#card-cvc {
+    height: 34px;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button.submit {
+    margin-top: 20px;
+}

@@ -1,0 +1,28 @@
+#preview-container {
+	height: 233px;
+	width: 415px;
+	position: relative;
+}
+#preview-trailer {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
+}
+
+#_atv_quote_desc {
+	height: 100px;
+}
+
+.featureImg-loading {
+	display: none;
+}
+.featuredImg-preview {
+	width: 100%;
+}
+td.featureImg-preview-td {
+	padding: 0;
+}

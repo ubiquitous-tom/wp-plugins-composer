@@ -1,0 +1,52 @@
+.user-status {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.user-status li.status-field {
+    margin-bottom: 10px;
+}
+
+#account-settings .section-header {
+    margin-top : 0;
+}
+
+#account-settings nav > ul.nav {
+    background-color: #f0f0f0;
+}
+
+#account-settings nav > ul.nav > li {
+    display: block;
+    position: relative;
+    width: initial;
+    margin: initial;
+    padding: initial;
+    border: initial;
+}
+
+#account-settings nav > ul.nav > li > a {
+    color: #002037;
+    border-radius: 0;
+}
+
+#account-settings nav > ul.nav > li > a:hover,
+#account-settings nav > ul.nav > li > a:hover {
+    background-color: #ddd;
+}
+
+#account-settings nav > ul.nav > li.active > a {
+    color: white;
+    background-color: #002037;
+}
+
+#account-settings nav > ul.nav > li.active > a:hover {
+    color: white;
+}
+
+iframe#stunningframe {
+    position: static;
+    border: none;
+    width: 100%;
+    height: 800px;
+}

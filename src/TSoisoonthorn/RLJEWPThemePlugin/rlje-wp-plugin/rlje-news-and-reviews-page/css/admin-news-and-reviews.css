@@ -1,0 +1,64 @@
+.form-table:nth-of-type(1) {
+    margin-bottom: 75px;
+}
+
+.form-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.form-table tr.ui-sortable-handle {
+    cursor: move;
+}
+
+.form-table label {
+    font-weight: 600;
+    width: 235px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.form-table .ui-state-default th {
+    vertical-align: middle;
+}
+
+.sortable-placeholder {
+    background-color: #ccc;
+}
+
+.ui-icon-arrowthick-2-n-s {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.news_section th {
+    width: 125px;
+}
+
+.video-wrapper {
+    height: 360px;
+}
+
+.video-wrapper .video-preview {
+    position: relative;
+    padding-bottom: 31.65%; /* 16:9 */
+    padding-top: 0;
+    height: 0;
+    margin-left: 240px;
+}
+
+.video-wrapper .video-preview video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-wrapper .video-preview .brightcove-public-player {
+    width: 640px;
+    height: calc(640px * 9/16);
+}
+
+.image-preview {
+    max-width: 640px;
+}

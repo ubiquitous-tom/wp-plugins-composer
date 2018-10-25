@@ -1,0 +1,8 @@
+.view-trailer button {
+	background: #976d31;
+	border-color: #976d31;
+}
+.view-trailer button:hover {
+	background: #a27b43;
+	border-color: #a27b43;
+}

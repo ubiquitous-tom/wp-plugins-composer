@@ -1,0 +1,15 @@
+.form-table td.column-key {
+	vertical-align: top;
+	font-weight: 600;
+}
+.form-table td.value.column-value {
+    display: inline-block;
+    max-width: 300px;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.form-table td.column-ttl {
+	vertical-align: top;
+	font-weight: 600;
+}
