@@ -92,12 +92,12 @@ jQuery(document).ready(function($) {
                 var alert = $(document.createElement('div')).addClass( "alert fade in" );
                 if(response.success) {
                     alert.addClass("alert-success");
-                    alert.append("<p>Your subscription has been cancelled.</p>");
+                    alert.append("Your subscription has been cancelled.");
                 } else {
                     alert.addClass("alert-danger");
-                    alert.append("<p>There was an error cancelling your account. We've been notified and working to fix it.</p>");
+                    alert.append("There was an error cancelling your account. We've been notified and working to fix it.");
                 }
-                $("#account-settings section").prepend(alert);
+                $("#account-settings section").html(alert);
             }
         );
     });

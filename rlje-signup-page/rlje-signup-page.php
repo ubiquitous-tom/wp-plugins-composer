@@ -34,7 +34,7 @@ class RLJE_signup_page {
 
 	public function fetch_stripe_key() {
 		if ( in_array( get_query_var( 'pagename' ), [ 'signup' ] ) ) {
-			$this->stripe_key = $this->api_helper->hit_api( '', 'stripekey' )['StripeKey'];
+			$this->stripe_key = $this->api_helper->fetch_stripe_key();
 		}
 	}
 
@@ -94,6 +94,7 @@ class RLJE_signup_page {
 		];
 
 		$api_response = $this->api_helper->hit_api( $params, 'membership', 'POST' );
+		$api_response = json_decode( wp_remote_retrieve_body( $api_response ), true );
 
 		if ( isset( $api_response['error'] ) ) {
 			$response['error'] = $api_response['error'];
@@ -118,6 +119,38 @@ class RLJE_signup_page {
 			'promo'      => [],
 		];
 
+		$profile_responose = $this->api_helper->hit_api( [ 'Email' => $user_email ], 'profile', 'GET' );
+		$profile_responose = json_decode( wp_remote_retrieve_body( $profile_responose ), true );
+
+		if ( isset( $profile_responose['Customer'] ) ) {
+			if( isset( $profile_responose['Membership'] ) ) {
+				// redirect to sign in
+				$response['error'] = 'Email already registered with the site. Sign in to start watching.';
+				wp_send_json( $response );
+			} else {
+				// User has an account but no membership.
+				// Pass to step two so they can select a plan.
+				if( !empty( $promo_code ) ) {
+					// Corner case: RENEWUMC should only be used by expired users.
+					if( in_array( strtolower( $promo_code ), [ 'renewumc' ] ) ) {
+						$response['error'] = "Promo code not found";
+						wp_send_json( $response );
+					} else {
+						$promo_response = $this->api_helper->get_promo( $promo_code );
+						if( isset( $promo_response[ "PromotionID" ] ) ) {
+							$response[ 'promo' ] = $promo_response;
+						} elseif( isset( $promo_response[ "error" ] ) ) {
+							$response['error'] = $promo_response[ "error" ];
+							wp_send_json( $response );
+						}
+					}
+				}
+				$response['success']    = true;
+				$response['session_id'] = $profile_responose['Session']['SessionID'];
+				wp_send_json( $response );
+			}
+		}
+
 		if( !empty( $promo_code ) ) {
 			// Corner case: RENEWUMC should only be used by expired users.
 			if( in_array( strtolower( $promo_code ), [ 'renewumc' ] ) ) {
@@ -134,36 +167,7 @@ class RLJE_signup_page {
 			}
 		}
 
-		$profile_responose = $this->api_helper->hit_api( [ 'Email' => $user_email ], 'profile', 'GET' );
-
-		if ( isset( $profile_responose['Customer'] ) ) {
-			if( isset( $profile_responose['Membership'] ) ) {
-				// redirect to sign in
-				$response['error'] = 'Email already registered with the site. Sign in to start watching.';
-				wp_send_json( $response );
-			} else {
-				// User has an account but no membership.
-				// Pass to step two so they can select a plan.
-				$response['success']    = true;
-				$response['session_id'] = $profile_responose['Session']['SessionID'];
-				wp_send_json( $response );
-			}
-		}
-
-		$params = [
-			'App'         => [
-				'AppVersion' => 'UMCTV.Version.2.0',
-			],
-			'Credentials' => [
-				'Password' => $user_password,
-				'Username' => $user_email,
-			],
-			'Request'     => [
-				'OperationalScenario' => 'CREATE_ACCOUNT',
-			],
-		];
-
-		$api_response = $this->api_helper->hit_api( $params, 'initializeapp', 'POST' );
+		$api_response = $this->api_helper->signup_user( $user_email, $user_password );
 
 		if ( isset( $api_response['error'] ) ) {
 			$response['error'] = $api_response['error'];
@@ -180,6 +184,10 @@ class RLJE_signup_page {
 		$pagename = get_query_var( 'pagename' );
 
 		if ( 'signup' === $pagename ) {
+			if ( isset( $_COOKIE['ATVSessionCookie'] ) && rljeApiWP_isUserEnabled( $_COOKIE['ATVSessionCookie'] ) ) {
+				wp_redirect( home_url(), 303 );
+				exit();
+			}
 			// Prevent internal 404 on custome search page because of template_redirect hook.
 			status_header( 200 );
 			$wp_query->is_404  = false;

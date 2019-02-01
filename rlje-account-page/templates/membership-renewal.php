@@ -15,8 +15,11 @@ get_header();
 				<div class="form-group">
 					<label for="sub-plan">Select a plan</label>
 					<select id="sub-plan" class="form-control" >
-						<option value="yearly">Yearly - $49.99</option>
-						<option value="monthly">Monthly - $4.99</option>
+					<?php foreach ( $this->membership_plans as $plan ) : ?>
+						<option value="<?php echo strtolower( $plan['title'] ); ?>">
+							<?php echo ucfirst( $plan[ 'title' ] ) . ' - $' . $plan['cost'] ; ?>
+						</option>
+					<?php endforeach; ?>
 					</select>
 				</div>
 				<h3 class="form-head">Billing information</h3>

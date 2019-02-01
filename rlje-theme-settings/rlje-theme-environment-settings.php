@@ -61,7 +61,7 @@ class RLJE_Theme_Environment_Settings {
 	public function display_rlje_environment_options_content() {
 		echo 'Specific environment for the theme';
 		$this->theme_environment_settings = get_option( 'rlje_theme_environment_settings' );
-		var_dump( $this->theme_environment_settings );
+		//var_dump( $this->theme_environment_settings );
 	}
 
 	public function display_environment_type() {

@@ -12,12 +12,47 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_init', array( $this, 'display_options' ) );
+		add_action( 'admin_menu', [ $this, 'third_party_submenu' ] );
 	}
 
 	public function enqueue_scripts( $hook ) {
-		if ( 'toplevel_page_rlje-theme-settings' === $hook ) {
+		if ( 'rlje-settings_page_3rd-party-options' === $hook ) {
 			wp_enqueue_script( 'rlje-theme-setting', plugins_url( 'settings/3rd-party-tab/js/script.js', __FILE__ ) );
 		}
+	}
+
+	public function third_party_submenu() {
+		add_submenu_page(
+			'rlje-theme-settings',
+			'Third party services settings',
+			'3rd Party Options',
+			'manage_network',
+			'3rd-party-options',
+			[ $this, 'third_party_settings_page' ]
+		);
+	}
+
+	public function third_party_settings_page() {
+		?>
+		<div class="wrap">
+			<div id="icon-options-general" class="icon32"></div>
+			<h1>3rd Party Options</h1>
+			<p>You can access and update third party services settings used by the site on this page</p>
+			<?php settings_errors(); ?>
+			<form method="post" action="options.php">
+				<?php
+					// Add_settings_section callback is displayed here. For every new section we need to call settings_fields.
+					settings_fields( 'rlje_3rd_party_section' );
+
+					// all the add_settings_field callbacks is displayed here.
+					do_settings_sections( '3rd-party-options' );
+
+					// Add the submit button to serialize the options.
+					submit_button();
+				?>
+			</form>
+		</div>
+		<?php
 	}
 
 	public function display_options() {
@@ -29,53 +64,47 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 		register_setting( 'rlje_3rd_party_section', 'rlje_stunning_settings' );
 		register_setting( 'rlje_3rd_party_section', 'rlje_smart_app_banner_settings' );
 
-		// Here we display the sections and options in the settings page based on the active tab.
-		$tab = ( ! empty( $_GET['tab'] ) ) ? $_GET['tab'] : '';
-		if ( '3rd-party-options' === $tab ) {
-			add_settings_section( 'rlje_apple_section', 'Apple Options', array( $this, 'display_apple_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'apple_itunes_app_id', 'Apple Itunes App', array( $this, 'display_apple_itunes_app_settings' ), 'rlje-theme-settings', 'rlje_apple_section' );
+		add_settings_section( 'rlje_apple_section', 'Apple Options', array( $this, 'display_apple_options_content' ), '3rd-party-options' );
+		add_settings_field( 'apple_itunes_app_id', 'Apple Itunes App', array( $this, 'display_apple_itunes_app_settings' ), '3rd-party-options', 'rlje_apple_section' );
 
-			add_settings_section( 'rlje_google_section', 'Google Options', array( $this, 'display_google_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'google_analytics', 'Google Analytics', array( $this, 'display_google_analytics_settings' ), 'rlje-theme-settings', 'rlje_google_section' );
-			add_settings_field( 'google_site_verification', 'Google Site Verification', array( $this, 'display_google_site_verification_settings' ), 'rlje-theme-settings', 'rlje_google_section' );
-			add_settings_field( 'google_play_app_id', 'Google Play App', array( $this, 'display_google_play_app_settings' ), 'rlje-theme-settings', 'rlje_google_section' );
+		add_settings_section( 'rlje_google_section', 'Google Options', array( $this, 'display_google_options_content' ), '3rd-party-options' );
+		add_settings_field( 'google_analytics', 'Google Analytics', array( $this, 'display_google_analytics_settings' ), '3rd-party-options', 'rlje_google_section' );
+		add_settings_field( 'google_site_verification', 'Google Site Verification', array( $this, 'display_google_site_verification_settings' ), '3rd-party-options', 'rlje_google_section' );
+		add_settings_field( 'google_play_app_id', 'Google Play App', array( $this, 'display_google_play_app_settings' ), '3rd-party-options', 'rlje_google_section' );
 
-			add_settings_section( 'rlje_sailthru_section', 'Sailthru Options', array( $this, 'display_sailthru_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'sailthru', 'Sailthru Customer ID', array( $this, 'display_sailthru_settings' ), 'rlje-theme-settings', 'rlje_sailthru_section' );
+		add_settings_section( 'rlje_sailthru_section', 'Sailthru Options', array( $this, 'display_sailthru_options_content' ), '3rd-party-options' );
+		add_settings_field( 'sailthru', 'Sailthru Customer ID', array( $this, 'display_sailthru_settings' ), '3rd-party-options', 'rlje_sailthru_section' );
 
-			add_settings_section( 'rlje_rightsline_section', 'Rightsline Options', array( $this, 'display_rightsline_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'rightsline_base_url', 'Base URL', array( $this, 'display_rightsline_base_url' ), 'rlje-theme-settings', 'rlje_rightsline_section' );
-			add_settings_field( 'rightsline_auth_type', 'Auth Type', array( $this, 'display_rightsline_auth_type' ), 'rlje-theme-settings', 'rlje_rightsline_section' );
-			add_settings_field( 'rightsline_auth_header', 'Auth Header', array( $this, 'display_rightsline_auth_header' ), 'rlje-theme-settings', 'rlje_rightsline_section' );
+		add_settings_section( 'rlje_rightsline_section', 'Rightsline Options', array( $this, 'display_rightsline_options_content' ), '3rd-party-options' );
+		add_settings_field( 'rightsline_base_url', 'Base URL', array( $this, 'display_rightsline_base_url' ), '3rd-party-options', 'rlje_rightsline_section' );
+		add_settings_field( 'rightsline_auth_type', 'Auth Type', array( $this, 'display_rightsline_auth_type' ), '3rd-party-options', 'rlje_rightsline_section' );
+		add_settings_field( 'rightsline_auth_header', 'Auth Header', array( $this, 'display_rightsline_auth_header' ), '3rd-party-options', 'rlje_rightsline_section' );
 
-			add_settings_section( 'rlje_tealium_section', 'Tealium Options', array( $this, 'display_tealium_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'tealium_id', 'Tealium Tag', array( $this, 'display_tealium_settings' ), 'rlje-theme-settings', 'rlje_tealium_section' );
+		add_settings_section( 'rlje_tealium_section', 'Tealium Options', array( $this, 'display_tealium_options_content' ), '3rd-party-options' );
+		add_settings_field( 'tealium_id', 'Tealium Tag', array( $this, 'display_tealium_settings' ), '3rd-party-options', 'rlje_tealium_section' );
 
-			add_settings_section( 'rlje_stunning_section', 'Stunning Options', array( $this, 'display_stunning_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'stunning_id', 'Stunning ID', array( $this, 'display_stunning_settings' ), 'rlje-theme-settings', 'rlje_stunning_section' );
+		add_settings_section( 'rlje_stunning_section', 'Stunning Options', array( $this, 'display_stunning_options_content' ), '3rd-party-options' );
+		add_settings_field( 'stunning_id', 'Stunning ID', array( $this, 'display_stunning_settings' ), '3rd-party-options', 'rlje_stunning_section' );
 
-			add_settings_section( 'rlje_smart_app_banner_section', 'Smart App Banner Options', array( $this, 'display_smart_app_banner_options_content' ), 'rlje-theme-settings' );
-			add_settings_field( 'smart_app_banner_status', 'Smart App Banner On/Off', array( $this, 'display_smart_app_banner_status' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_title', 'Smart App Banner title', array( $this, 'display_smart_app_banner_title' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_author', 'Smart App Banner Author', array( $this, 'display_smart_app_banner_author' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_price', 'Smart App Banner Price', array( $this, 'display_smart_app_banner_price' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_price_suffix_apple', 'Smart App Banner Price for iOS', array( $this, 'display_smart_app_banner_price_suffix_apple' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_price_suffix_google', 'Smart App Banner Price for Android', array( $this, 'display_smart_app_banner_price_suffix_google' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_icon_apple', 'Smart App Banner iOS Icon', array( $this, 'display_smart_app_banner_icon_apple' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_icon_google', 'Smart App Banner Android Icon', array( $this, 'display_smart_app_banner_icon_google' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_button', 'Smart App Banner Button Text', array( $this, 'display_smart_app_banner_button_text' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_button_url_apple', 'Smart App Banner App URL for iOS', array( $this, 'display_smart_app_banner_button_url_apple' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_button_url_google', 'Smart App Banner App URL for Android', array( $this, 'display_smart_app_banner_button_url_google' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_enabled_platforms', 'Smart App Banner Supported Platforms', array( $this, 'display_smart_app_banner_enabled_platforms' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			// add_settings_field( 'smart_app_banner_custom_design_modifier', 'Smart App Banner title', array( $this, 'display_smart_app_banner_custom_design_modifier' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-			add_settings_field( 'smart_app_banner_hide_ttl', 'Smart App Banner Cookie Time', array( $this, 'display_smart_app_banner_hide_ttl' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
-		}
+		add_settings_section( 'rlje_smart_app_banner_section', 'Smart App Banner Options', array( $this, 'display_smart_app_banner_options_content' ), '3rd-party-options' );
+		add_settings_field( 'smart_app_banner_status', 'Smart App Banner On/Off', array( $this, 'display_smart_app_banner_status' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_title', 'Smart App Banner title', array( $this, 'display_smart_app_banner_title' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_author', 'Smart App Banner Author', array( $this, 'display_smart_app_banner_author' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_price', 'Smart App Banner Price', array( $this, 'display_smart_app_banner_price' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_price_suffix_apple', 'Smart App Banner Price for iOS', array( $this, 'display_smart_app_banner_price_suffix_apple' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_price_suffix_google', 'Smart App Banner Price for Android', array( $this, 'display_smart_app_banner_price_suffix_google' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_icon_apple', 'Smart App Banner iOS Icon', array( $this, 'display_smart_app_banner_icon_apple' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_icon_google', 'Smart App Banner Android Icon', array( $this, 'display_smart_app_banner_icon_google' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_button', 'Smart App Banner Button Text', array( $this, 'display_smart_app_banner_button_text' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_button_url_apple', 'Smart App Banner App URL for iOS', array( $this, 'display_smart_app_banner_button_url_apple' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_button_url_google', 'Smart App Banner App URL for Android', array( $this, 'display_smart_app_banner_button_url_google' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_enabled_platforms', 'Smart App Banner Supported Platforms', array( $this, 'display_smart_app_banner_enabled_platforms' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
+		// add_settings_field( 'smart_app_banner_custom_design_modifier', 'Smart App Banner title', array( $this, 'display_smart_app_banner_custom_design_modifier' ), 'rlje-theme-settings', 'rlje_smart_app_banner_section' );
+		add_settings_field( 'smart_app_banner_hide_ttl', 'Smart App Banner Cookie Time', array( $this, 'display_smart_app_banner_hide_ttl' ), '3rd-party-options', 'rlje_smart_app_banner_section' );
 	}
 
 	public function display_apple_options_content() {
-		echo 'Apple Related Settings';
 		$this->apple = get_option( 'rlje_apple_settings' );
-		var_dump( $this->apple );
 	}
 
 	public function display_apple_itunes_app_settings() {
@@ -87,9 +116,7 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	}
 
 	public function display_google_options_content() {
-		echo 'Google Related Settings';
 		$this->google = get_option( 'rlje_google_settings' );
-		var_dump( $this->google );
 	}
 
 	public function display_google_analytics_settings() {
@@ -117,9 +144,7 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	}
 
 	public function display_sailthru_options_content() {
-		echo 'Sailthru Settings';
 		$this->sailthru = get_option( 'rlje_sailthru_settings', array() );
-		var_dump( $this->sailthru );
 	}
 
 	public function display_sailthru_settings() {
@@ -131,9 +156,7 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	}
 
 	public function display_rightsline_options_content() {
-		echo 'Rightsline Settings';
 		$this->rightsline = get_option( 'rlje_rightsline_settings' );
-		var_dump( $this->rightsline );
 	}
 
 	public function display_rightsline_base_url() {
@@ -170,9 +193,7 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	}
 
 	public function display_tealium_options_content() {
-		echo 'Tealium Settings';
 		$this->tealium = get_option( 'rlje_tealium_settings' );
-		var_dump( $this->tealium );
 	}
 
 	public function display_tealium_settings() {
@@ -184,9 +205,7 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	}
 
 	public function display_stunning_options_content() {
-		echo 'Stunning Settings';
 		$this->stunning = get_option( 'rlje_stunning_settings' );
-		var_dump($this->stunning);
 	}
 
 	public function display_stunning_settings() {
@@ -197,9 +216,7 @@ class RLJE_Theme_Settings_3rd_Party_Tab {
 	}
 
 	public function display_smart_app_banner_options_content() {
-		echo 'Smart App Banner Settings';
 		$this->smart_app_banner = get_option( 'rlje_smart_app_banner_settings' );
-		var_dump( $this->smart_app_banner );
 	}
 
 	public function display_smart_app_banner_status() {

@@ -19,6 +19,7 @@ class RLJE_Redis_Table extends WP_List_Table {
 				'singular' => 'rlje_theme_delete_redis_cache', // Singular label
 				'plural'   => 'rlje_theme_delete_redis_caches', // plural label, also this well be one of the table css class
 				'ajax'     => false, // We won't support Ajax for this table
+				'screen'   => 'rlje_redis_table', // Add this to prevent PHP notice in the log
 			)
 		);
 

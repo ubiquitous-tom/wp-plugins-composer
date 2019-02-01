@@ -18,6 +18,74 @@ class RLJE_api_helper {
 		return base64_encode( $hash );
 	}
 
+	public function fetch_stripe_key() {
+		$api_response = wp_remote_retrieve_body( $this->hit_api( [], 'stripekey' ) );
+		$api_response_decoded = json_decode( $api_response, true );
+		if ( isset( $api_response_decoded['StripeKey'] ) ) {
+			return $api_response_decoded['StripeKey'];
+		} else {
+			return null;
+		}
+	}
+
+	public function signin_user( $email, $password ) {
+		$response = [
+			'error' => '',
+		];
+		$request_body  = [
+			'App'         => [
+				'AppVersion' => $this->api_app_version,
+			],
+			'Credentials' => [
+				'Username' => $email,
+				'Password' => $password,
+			],
+			'Request'     => [
+				'OperationalScenario' => 'SIGNIN',
+			],
+		];
+		$api_response = $this->hit_api( $request_body, 'initializeapp', 'POST' );
+		if ( $api_response ) {
+			switch ( wp_remote_retrieve_response_code( $api_response ) ) {
+				case 404:
+					$response['error'] = 'No account with that email address exists.';
+					break;
+				case 401:
+					$response['error'] = 'Sign in failed. Please check your sign in information and try again.';
+					break;
+				case 201:
+					$response = array_merge( $response, json_decode( wp_remote_retrieve_body( $api_response ), true ) );
+					break;
+				default:
+					$response['error'] = 'Could not process the request. Please try again later.';
+					break;
+			}
+		} else {
+			$response['error'] = 'Could not process the request. Please try again later.';
+		}
+		return $response;
+	}
+
+	public function signup_user( $email, $password ) {
+		$response = [
+			'error' => '',
+		];
+		$request_body  = [
+			'App'         => [
+				'AppVersion' => $this->api_app_version,
+			],
+			'Credentials' => [
+				'Username' => $email,
+				'Password' => $password,
+			],
+			'Request'     => [
+				'OperationalScenario' => 'CREATE_ACCOUNT',
+			],
+		];
+		$api_response = $this->hit_api( $request_body, 'initializeapp', 'POST' );
+		return json_decode( wp_remote_retrieve_body( $api_response ), true );
+	}
+
 	private function get_user_agent() {
 		$userAgent = '';
 		if ( ! empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
@@ -40,9 +108,41 @@ class RLJE_api_helper {
 	}
 
 	public function get_promo( $promo_code ) {
-		return  $this->hit_api( [ 'Code' => $promo_code ], 'promo' );
+		$api_response = $this->hit_api( [ 'Code' => $promo_code ], 'promo' );
+		return json_decode( wp_remote_retrieve_body( $api_response ), true );
 	}
 
+	public function get_plans() {
+		return [
+			[
+				"title" => "monthly",
+				"duration" => [
+					"term" => 30,
+					"type" => "day"
+				],
+				"cost" => 4.99
+			],
+			[
+				"title" => "yearly",
+				"duration" => [
+					"term" => 12,
+					"type" => "month"
+				],
+				"cost" => 49.99
+			],
+		];
+	}
+
+	/**
+	 *  Hits RLJE API with provided parameters and returns its output
+	 *
+	 * @param array  $params input array gets passed to RLJE API.
+	 * @param string $method API end-point to hit.
+	 * @param string $verb HTTP mothod to use.
+	 *
+	 * @return array|boolean returns false if there was an error
+	 * an array if it was successful.
+	 */
 	public function hit_api( $params, $method, $verb = 'GET' ) {
 		$url     = $this->api_base . '/' . $method;
 		$headers = [
@@ -64,6 +164,7 @@ class RLJE_api_helper {
 				}
 				$raw_response = wp_remote_post(
 					$url, [
+						'timeout' => 15,
 						'headers' => $headers,
 						'body'    => json_encode( $params ),
 					]
@@ -82,17 +183,19 @@ class RLJE_api_helper {
 						'body'    => json_encode( $params ),
 					]
 				);
-				if ( is_wp_error( $raw_response ) ) {
-					error_log( 'Error hiting API ' . $raw_response->get_error_message() );
-					$response = false;
-				}
 				break;
 
 			default:
 				// code...
 				break;
 		}
-		$response = json_decode( wp_remote_retrieve_body( $raw_response ), true );
+		if ( is_wp_error( $raw_response ) ) {
+			error_log( 'Error hiting API ' . $raw_response->get_error_message() );
+			$response = false;
+		} else {
+			$response = $raw_response;
+		}
+		//$response = json_decode( wp_remote_retrieve_body( $raw_response ), true );
 		return $response;
 	}
 }

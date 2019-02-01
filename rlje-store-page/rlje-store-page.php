@@ -36,7 +36,6 @@ class RLJE_Store_Page {
 	public function enqueue_scripts() {
 		if ( in_array( get_query_var( 'pagename' ), [ 'gift' ] ) ) {
 			wp_enqueue_style( 'store-main-style', plugins_url( 'css/style.css', __FILE__ ) );
-			wp_register_script( 'blueimp-javascript-templates', 'https://cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.11.0/js/tmpl.min.js', [ 'jquery-core' ] );
 			wp_enqueue_script( 'store-gift-script', plugins_url( 'js/gift.js', __FILE__ ), [ 'jquery-core', 'blueimp-javascript-templates', 'stripe-js' ] );
 			wp_localize_script(
 				'store-gift-script', 'gift_vars', [
@@ -50,7 +49,7 @@ class RLJE_Store_Page {
 
 	public function fetch_stripe_key() {
 		if ( in_array( get_query_var( 'pagename' ), [ 'gift' ] ) ) {
-			$this->stripe_key = $this->api_helper->hit_api( '', 'stripekey' )['StripeKey'];
+			$this->stripe_key = $this->api_helper->fetch_stripe_key();
 		}
 	}
 
@@ -79,6 +78,7 @@ class RLJE_Store_Page {
 			],
 		];
 		$api_response = $this->api_helper->hit_api( $params, 'giftpayment', 'POST' );
+		$api_response = json_decode( wp_remote_retrieve_body( $api_response ), true );
 		if ( isset( $api_response['GiftCodes'] ) ) {
 			$response['success']  = true;
 			$response['order_id'] = $api_response['OrderID'];

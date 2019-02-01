@@ -9,7 +9,13 @@
         // console.log('update', event, ui);
         var layout = $(this).sortable('toArray');
         // console.log(layout);
-        $('input#section-position-layout').val(layout);
+        // $('input#section-position-layout').val(layout);
+        for (var i=0; i < layout.length; i++) {
+          if (layout[i] === 'news-and-reviews') {
+            $('input#section-position-news-index').val(i);
+            break;
+          }
+        }
       }
     });
   });

@@ -31,26 +31,14 @@ class RLJE_Section_Position extends RLJE_Front_page {
 	}
 
 	public function initialize_section_index() {
-		$this->section          = get_option( 'rlje_front_page_section' );
-		$this->categories_home  = rljeApiWP_getHomeItems( 'categories' );
-		$this->categories_items = ( isset( $this->categories_home->options ) ) ? $this->categories_home->options : array();
-
-		// Delete `rlje_front_page_section` data if the CMS data is updated
-		if ( ! empty( $this->section['original_section_position'] ) ) {
-			foreach ( $this->section['original_section_position'] as $key => $original_section_position ) {
-				if ( $original_section_position->id !== $this->categories_items[ $key ]->id ) {
-					unset( $this->section['section_position'] );
-					delete_option( 'rlje_front_page_section' );
-					break;
-				}
-			}
-		}
-
+		$this->section                   = get_option( 'rlje_front_page_section' );
+		$this->categories_home           = rljeApiWP_getHomeItems( 'categories' );
+		$this->categories_items          = ( isset( $this->categories_home->options ) ) ? $this->categories_home->options : array();
 		$this->browse_id_list_availables = apply_filters( 'atv_get_browse_genres_availables', '' );
 	}
 
 	public function display_options() {
-		register_setting( 'rlje_front_page', 'rlje_front_page_section', array( $this, 'sanitize_callback' ) );
+		register_setting( 'rlje-section-position', 'rlje_front_page_section', array( $this, 'sanitize_callback' ) );
 
 		add_settings_section( 'position_section', 'Section Position Settings', array( $this, 'section_position_settings' ), 'rlje-section-position' );
 		add_settings_field( 'country_listing', 'Available Countries', array( $this, 'homepage_country_listing' ), 'rlje-section-position', 'position_section' );
@@ -76,7 +64,7 @@ class RLJE_Section_Position extends RLJE_Front_page {
 			<?php settings_errors(); ?>
 			<form method="post" action="options.php">
 			<?php
-				settings_fields( $this->prefix );
+				settings_fields( 'rlje-section-position' );
 				do_settings_sections( 'rlje-section-position' );
 				submit_button();
 			?>
@@ -87,8 +75,6 @@ class RLJE_Section_Position extends RLJE_Front_page {
 
 	public function section_position_settings() {
 		echo 'Rearrange Section Position for the homepage for different country';
-		// delete_option( 'rlje_front_page_section' );
-		// $this->section = get_option( 'rlje_front_page_section' );
 		$this->current_country = $this->get_current_country();
 		$country_code          = strtoupper( $this->current_country['code'] );
 		var_dump( $this->section );
@@ -114,19 +100,26 @@ class RLJE_Section_Position extends RLJE_Front_page {
 
 	public function section_listing() {
 		// echo 'section_listing';
-		$section_position = ( ! empty( $this->section['section_position'] ) ) ? $this->section['section_position'] : array();
-		if ( empty( $section_position ) ) {
-			$section_position       = $this->categories_items;
-			$news_and_reviews       = new stdClass();
-			$news_and_reviews->id   = 'news-and-reviews';
-			$news_and_reviews->name = 'News And Reviews';
-			$section_position[]     = $news_and_reviews;
-		}
+		$last_position          = count( $this->categories_items );
+		$section_position_index = ( ! empty( $this->section['section_position_index'] ) ) ? $this->section['section_position_index'] : $last_position;
+
+		// Add News And Reviews to the list.
+		$section_position       = $this->categories_items;
+		$news_and_reviews       = new stdClass();
+		$news_and_reviews->id   = 'news-and-reviews';
+		$news_and_reviews->name = 'News And Reviews';
+		$news_and_reviews->type = 'news-and-reviews';
+
+		// Create a placeholder array.
+		$placeholder = array( 'placeholder' => 'Placeholder' );
+		// Splice placeholder to the array then add News And Reviews.
+		array_splice( $section_position, $section_position_index, 0, $placeholder );
+		$section_position[ $section_position_index ] = $news_and_reviews;
 		?>
 		<div id="drag-n-drop-section">
 			<ul id="homepage-layout">
 				<li id="hero-carousel" class="disabled">Hero Carousel</li>
-				<?php foreach ( $section_position as $section_position_item ) : ?>
+				<?php foreach ( $section_position as $section_position_item_index => $section_position_item ) : ?>
 					<?php $classes = ( 'news-and-reviews' === $section_position_item->id ) ? '' : 'ui-state-highlight categories-item'; ?>
 				<li id="<?php echo esc_attr( $section_position_item->id ); ?>" class="<?php echo esc_attr( $classes ); ?>"><?php echo esc_html( $section_position_item->name ); ?></li>
 				<?php endforeach; ?>
@@ -134,7 +127,7 @@ class RLJE_Section_Position extends RLJE_Front_page {
 			</ul>
 		</div>
 
-		<input type="hidden" id="section-position-layout" name="rlje_front_page_section[section_position]" value="<?php echo esc_attr( join( ',', array_keys( $this->section['section_position'] ) ) ); ?>">
+		<input type="hidden" id="section-position-news-index" name="rlje_front_page_section[section_position_index]" value="<?php echo esc_attr( $section_position_index ); ?>">
 		<?php
 	}
 
@@ -152,47 +145,14 @@ class RLJE_Section_Position extends RLJE_Front_page {
 	}
 
 	public function sanitize_callback( $data ) {
-		$this->initialize_section_index();
-
-		// For checking against the current CMS data.
-		$data['original_section_position'] = $this->categories_items;
-
 		// For clear cache button.
 		if ( ! empty( $_POST['submit'] ) && ( 'Delete Section Positioning Cache' === $_POST['submit'] ) ) {
 			delete_option( 'rlje_front_page_section' );
 			unset( $data['section_position'] );
+			unset( $data['section_position_index'] );
 		}
 
-		if ( ! empty( $data['section_position'] ) ) {
-			$section_position_array = explode( ',', $data['section_position'] );
-			$section_position       = [];
-			$is_bottom_section      = false;
-			foreach ( $section_position_array as $section_position_id ) {
-				foreach ( $this->categories_items as $categories_item ) {
-					// Home Featured Section or Home Spotlight Section.
-					if ( ( strtolower( $categories_item->id ) === strtolower( $section_position_id ) ) ) {
-						$categories_item->section_type            = ( false === $is_bottom_section ) ? 'home-featured' : 'home-spotlight';
-						$section_position[ $section_position_id ] = $categories_item;
-					}
-
-					// News And Reviews Section.
-					if ( 'news-and-reviews' === strtolower( $section_position_id ) ) {
-						$news_and_reviews_item                    = new stdClass();
-						$news_and_reviews_item->id                = 'news-and-reviews';
-						$news_and_reviews_item->name              = 'News And Reviews';
-						$news_and_reviews_item->section_type      = 'news-and-reviews';
-						$section_position[ $section_position_id ] = $news_and_reviews_item;
-
-						// From here on out it's for Home Spotlight Section.
-						$is_bottom_section = true;
-					}
-				}
-			}
-			$data['section_position'] = $section_position;
-		}
-
-		add_settings_error( 'rlje-theme-settings', 'settings_updated', 'Successfully updated', 'updated' );
-
+		// add_settings_error( 'rlje-theme-settings', 'settings_updated', 'Successfully updated', 'updated' );
 		return $data;
 	}
 }

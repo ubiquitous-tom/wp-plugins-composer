@@ -9,10 +9,14 @@ class RLJE_Signin_Page {
 	public function __construct() {
 		$this->api_helper = new RLJE_api_helper();
 		add_action( 'init', array( $this, 'add_browse_rewrite_rules' ) );
+		add_filter( 'document_title_parts', [ $this, 'signin_title_parts' ] );
 		add_action( 'template_redirect', array( $this, 'browse_template_redirect' ) );
 
 		add_action( 'wp_ajax_signin_user', [ $this, 'signin_user' ] );
 		add_action( 'wp_ajax_nopriv_signin_user', [ $this, 'signin_user' ] );
+
+		add_action( 'wp_ajax_reset_password', [ $this, 'reset_password' ] );
+		add_action( 'wp_ajax_nopriv_reset_password', [ $this, 'reset_password' ] );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'body_class', array( $this, 'browse_body_class' ) );
@@ -22,7 +26,7 @@ class RLJE_Signin_Page {
 	public function enqueue_scripts() {
 		if ( in_array( get_query_var( 'pagename' ), [ 'signin', 'forgotpassword' ] ) ) {
 			wp_enqueue_style( 'signin-index', plugins_url( 'css/style.css', __FILE__ ) );
-			wp_enqueue_script( 'signin-script', plugins_url( 'js/signin.js', __FILE__ ), [ 'jquery' ] );
+			wp_enqueue_script( 'signin-script', plugins_url( 'js/signin.js', __FILE__ ), [ 'jquery-core', 'blueimp-javascript-templates' ] );
 			wp_localize_script(
 				'signin-script', 'signin_vars', [
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -34,6 +38,17 @@ class RLJE_Signin_Page {
 	public function add_browse_rewrite_rules() {
 		add_rewrite_rule( '^signin([^/]+)/?', 'index.php?pagename=signin', 'top' );
 		add_rewrite_rule( '^forgotpassword([^/]+)/?', 'index.php?pagename=forgot-password', 'top' );
+	}
+
+	public function signin_title_parts( $title ) {
+		if ( in_array( get_query_var( 'pagename' ), [ 'signin', 'forgotpassword' ] ) ) {
+			if( 'signin' === get_query_var( 'pagename' ) ) {
+				$title['title'] = 'Log in';
+			} else {
+				$title['title'] = 'Reset Password';
+			}
+		}
+		return $title;
 	}
 
 	private function cacheUserProfile( $user_profile ) {
@@ -53,20 +68,8 @@ class RLJE_Signin_Page {
 		$user_status   = 'inactive';
 		$user_email    = strval( $_POST['email_address'] );
 		$user_password = strval( $_POST['password'] );
-		$request_body  = [
-			'App'         => [
-				'AppVersion' => $this->api_app_version,
-			],
-			'Credentials' => [
-				'Username' => $user_email,
-				'Password' => $user_password,
-			],
-			'Request'     => [
-				'OperationalScenario' => 'SIGNIN',
-			],
-		];
 
-		$api_response = $this->api_helper->hit_api( $request_body, 'initializeapp', 'POST' );
+		$api_response = $this->api_helper->signin_user( $user_email, $user_password );
 		if ( isset( $api_response['Session'] ) ) {
 			$session_id = $api_response['Session']['SessionID'];
 			if ( isset( $api_response['Membership'] ) ) {
@@ -87,7 +90,7 @@ class RLJE_Signin_Page {
 			// Ask Transient to cache user data
 			$this->cacheUserProfile( $api_response );
 		} else {
-			$response['error'] = 'No account with that email address exists.';
+			$response['error'] = $api_response['error'];
 		}
 
 		$response['status'] = $user_status;
@@ -95,20 +98,26 @@ class RLJE_Signin_Page {
 		wp_send_json( $response );
 	}
 
-	private function resetPassword( $email_address ) {
-		$success      = false;
+	public function reset_password() {
+		$response      = [
+			'success' => false,
+			'error'   => '',
+		];
+		$email_address    = strval( $_POST['email_address'] );
 		$request_body = [
 			'Customer' => [
 				'Email' => $email_address,
 			],
 		];
-		if ( ! empty( $email_address ) ) {
-			$response = $this->api_helper->hit_api( $request_body, 'forgotpassword', 'POST' );
-			if ( isset( $response['success'] ) && $response['success'] == true ) {
-				$success = true;
-			}
+		$api_response = $this->api_helper->hit_api( $request_body, 'forgotpassword', 'POST' );
+		$api_response = json_decode( wp_remote_retrieve_body( $api_response ), true );
+
+		if ( isset( $api_response['success'] ) && $api_response['success'] == true ) {
+			$response['success'] = true;
+		} else {
+			$response['error'] = 'Your e-mail address was not found, please check it and try again.';
 		}
-		return $success;
+		wp_send_json( $response );
 	}
 
 	public function browse_template_redirect() {
@@ -116,14 +125,14 @@ class RLJE_Signin_Page {
 		global $wp_query;
 
 		if ( 'signin' === $pagename ) {
-			if ( isset( $_COOKIE['ATVSessionCookie'] ) && rljeApiWP_isUserActive( $_COOKIE['ATVSessionCookie'] ) ) {
+			if ( isset( $_COOKIE['ATVSessionCookie'] ) && rljeApiWP_isUserEnabled( $_COOKIE['ATVSessionCookie'] ) ) {
 				wp_redirect( home_url(), 303 );
 				exit();
 			}
 			// Prevent internal 404 on custome search page because of template_redirect hook.
 			$wp_query->is_404  = false;
 			$wp_query->is_page = true;
-			// $wp_query->is_archive = true;
+			status_header( 200 );
 			ob_start();
 			require_once plugin_dir_path( __FILE__ ) . 'templates/signin.php';
 			$html = ob_get_clean();
@@ -131,21 +140,13 @@ class RLJE_Signin_Page {
 			exit();
 		}
 		if ( 'forgotpassword' === $pagename ) {
-			if ( isset( $_COOKIE['ATVSessionCookie'] ) && rljeApiWP_isUserActive( $_COOKIE['ATVSessionCookie'] ) ) {
+			if ( isset( $_COOKIE['ATVSessionCookie'] ) && rljeApiWP_isUserEnabled( $_COOKIE['ATVSessionCookie'] ) ) {
 				wp_redirect( home_url(), 303 );
-			}
-			if ( ! empty( $_POST ) ) {
-				// Hook into API to reset user password
-				$email_address = $_POST['user_email'];
-				if ( $this->resetPassword( $email_address ) ) {
-					$password_reset_failed = false;
-				} else {
-					$password_reset_failed = true;
-				}
 			}
 			// Prevent internal 404 on custome search page because of template_redirect hook.
 			$wp_query->is_404  = false;
 			$wp_query->is_page = true;
+			status_header( 200 );
 			ob_start();
 			require_once plugin_dir_path( __FILE__ ) . 'templates/forgot_password.php';
 			$html = ob_get_clean();

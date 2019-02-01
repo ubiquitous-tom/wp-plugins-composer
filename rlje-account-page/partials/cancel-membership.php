@@ -2,7 +2,7 @@
 <?php if ( $this->account_cancelable() ) { ?>
 <h4>Hello <?php echo $this->get_user_name(); ?>!</h4>
 <div class="alert alert-info">
-	<p>You've been <?php bloginfo( 'name' ); ?> member since <strong><?php echo $this->get_user_join_date(); ?></strong>.</p>
+	<p>You've been a member of <?php bloginfo( 'name' ); ?> since <strong><?php echo $this->get_user_join_date(); ?></strong>.</p>
 	<p>On <strong><?php echo $this->get_next_billing_date(); ?></strong>, your card will be charged <strong><?php echo $this->get_next_billing_amount(); ?></strong> to continue with another month of <?php bloginfo( 'name' ); ?> benefits.</p>
 	<p>If you wish to cancel, please select the button below. You may be asked to sign in again.</p>
 </div>
@@ -20,7 +20,7 @@ Cancel <?php bloginfo( 'name' ); ?> Membership
 		<div class="modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title" id="myModalLabel">Confirm Cancallation</h4>
+			<h4 class="modal-title" id="myModalLabel">Confirm Cancellation</h4>
 		</div>
 		<div class="modal-body">
 			<h4>Are you sure you'd like to cancel your account?</h4>

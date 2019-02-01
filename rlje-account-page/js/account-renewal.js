@@ -1,3 +1,4 @@
+var promo_code;
 jQuery(document).ready(function($) {
     initializeStripeElements(local_vars.stripe_key);
     $('#account-renewal form').on('submit', function(event) {
@@ -41,14 +42,14 @@ jQuery(document).ready(function($) {
                     function (response) {
                         submit_button.prop('disabled', false).html(submit_button_content);
                         var alert = jQuery(document.createElement('div')).addClass("alert fade in");
-                        if (response.success == false) {
-                            alert.addClass('alert-danger').html(response.error);
-                        } else {
+                        if (response.success == true) {
                             document.cookie = "ATVSessionCookie=; expires=-1; path=/";
-                            alert.addClass('alert-success').html('Thanks for your purchase. You\'d get redirected and asked to signin again.');
+                            alert.addClass('alert-success').html('Thanks for your purchase. You will now be redirected and asked to sign in again.');
                             var timer = setTimeout(function() {
                                 window.location.replace("/signin");
                             }, 10000);
+                        } else {
+                            alert.addClass('alert-danger').html(response.error);
                         }
                         alert.insertAfter(jQuery('#account-renewal header'));
                     }
@@ -57,40 +58,70 @@ jQuery(document).ready(function($) {
         });
     });
     $('#promo-code').on('blur', function(event) {
+        let update_promo = false;
+        if (typeof promo_code !== 'undefined') {
+            if ( promo_code !== $(this).val() ) {
+                update_promo = true;
+            }
+        } else if( $(this).val() ) {
+            update_promo = true;
+        }
         promo_code = $(this).val();
-        if(promo_code) {
+        if(update_promo) {
             jQuery('.alert').remove();
-            jQuery(document.createElement('div')).addClass("alert alert-info")
-                .append(jQuery(document.createElement('i')).addClass("fa fa-spinner fa-spin fa-fw"))
-                .append('Applying promo code')
-                .insertAfter(jQuery('#account-renewal header'));
-            jQuery.get(
-                local_vars.ajax_url,
-                {
-                    'action': 'apply_renewal_promo',
-                    'promo_code': promo_code
-                },
-                function (response) {
-                    jQuery('.alert').remove();
-                    var alert = jQuery(document.createElement('div')).addClass("alert fade in");
-                    if (response.success == false) {
-                        alert.addClass('alert-danger').html(response.error);
-                    } else {
-                        planOptions = [];
-                        alert.addClass('alert-success')
-                            .html('<i class="fa fa-check-circle-o fa-lg"></i>Promo ' + promo_code.toUpperCase() + ' applied.');
-                        response.plans.forEach(function(plan) {
-                            planOptions.push(
-                                jQuery('<option>')
-                                    .attr('value', plan.name.toLowerCase())
-                                    .html(`${capitalizeFirstLetter(plan.name)} - $${plan.cost}`)
-                            );
-                        });
-                        jQuery('#sub-plan').empty().append(planOptions);
-                    }
-                    alert.insertAfter(jQuery('#account-renewal header'));
+            jQuery('#sub-plan').prop( "disabled", true );
+            if(promo_code === "") {
+                if(Array.isArray(local_vars.plans) && local_vars.plans.length ) {
+                    planOptions = [];
+                    local_vars.plans.forEach(function(plan) {
+                        planOptions.push(
+                            jQuery('<option>')
+                                .attr('value', plan.title.toLowerCase())
+                                .html(`${capitalizeFirstLetter(plan.title)} - $${plan.cost}`)
+                        );
+                    });
+                    jQuery('#sub-plan')
+                        .empty().append(planOptions)
+                        .prop( "disabled", false );
                 }
-            )
+            } else {
+                jQuery(document.createElement('div')).addClass("alert alert-info")
+                    .append(jQuery(document.createElement('i')).addClass("fa fa-spinner fa-spin fa-fw"))
+                    .append('Applying promo code')
+                    .insertAfter(jQuery('#account-renewal header'));
+                jQuery.get(
+                    local_vars.ajax_url,
+                    {
+                        'action': 'apply_renewal_promo',
+                        'promo_code': promo_code
+                    },
+                    function (response) {
+                        jQuery('.alert').remove();
+                        if(Array.isArray(response.plans) && response.plans.length ) {
+                            planOptions = [];
+                            response.plans.forEach(function(plan) {
+                                planOptions.push(
+                                    jQuery('<option>')
+                                        .attr('value', plan.title.toLowerCase())
+                                        .html(`${capitalizeFirstLetter(plan.title)} - $${plan.cost}`)
+                                );
+                            });
+                            jQuery('#sub-plan')
+                                .empty().append(planOptions)
+                                .prop( "disabled", false );
+                        }
+                        var alert = jQuery(document.createElement('div')).addClass("alert fade in");
+                        if ( response.success === true ) {
+                            alert.addClass('alert-success')
+                                .html('<i class="fa fa-check-circle-o fa-lg"></i>Promo ' + promo_code.toUpperCase() + ' applied.');
+                        } else {
+                            alert.addClass('alert-danger').html(response.error);
+                        }
+                        alert.insertAfter(jQuery('#account-renewal header'));
+                    }
+                )
+            }
+            
         }
     })
 });
